@@ -16,6 +16,18 @@ Simpli is a platform that helps large corporations donate excess inventory to ch
 | `design/` | The interim microsite blueprint that preceded the activation layer direction |
 | `archive/` | Superseded iterations: early wireframe, mockup, and standalone prototype versions, kept for history |
 
+## Prototype screens
+
+The activation flow is a five screen sequence. Static captures below; the full interactive version is in `prototype/`.
+
+| Screen | |
+|--------|--|
+| 1. Post call landing | ![Screen 1](docs/screenshots/simpli-1.png) |
+| 2. Document upload | ![Screen 2](docs/screenshots/simpli-2.png) |
+| 3. Charity dashboard | ![Screen 3](docs/screenshots/simpli-3.png) |
+| 4. Donation match | ![Screen 4](docs/screenshots/simpli-4.png) |
+| 5. Impact report | ![Screen 5](docs/screenshots/simpli-5.png) |
+
 ## Running the prototype
 
 ```
