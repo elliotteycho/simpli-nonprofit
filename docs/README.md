@@ -12,6 +12,6 @@ The product narrative and primary deliverables.
 
 ## Notes
 
-`PRD.docx` is the expected slot for the Charity Activation Layer PRD. The source file was locked open in an application when this repo was assembled, so it could not be copied in automatically. Add it here, then commit.
+`PRD.docx` is the Charity Activation Layer PRD as delivered.
 
-`activation-layer-deck.pdf` was recovered from a working copy because the original was also locked open at assembly time. Verify it matches the final saved version and replace it if needed.
+`activation-layer-deck.pdf` is the final presentation deck delivered to Simpli leadership.
