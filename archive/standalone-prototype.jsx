@@ -1,0 +1,666 @@
+import { useState, useEffect } from "react";
+
+/* ─── PRODUCT SPACE THEME ─── */
+const T = {
+  purple: "#6B2FA0", purpleDk: "#4A1D6E", purpleLt: "#F3E8FF",
+  pink: "#D946A8", pinkLt: "#FDF2F8",
+  grad: "linear-gradient(135deg, #6B2FA0, #D946A8)",
+  gradHero: "linear-gradient(135deg, #6B2FA0, #9333EA, #D946A8)",
+  white: "#FFF", g50: "#FAFAFA", g100: "#F4F4F5", g200: "#E4E4E7",
+  g300: "#D4D4D8", g400: "#A1A1AA", g500: "#71717A", g600: "#52525B",
+  g700: "#3F3F46", g800: "#27272A", g900: "#18181B",
+  green: "#10B981", greenLt: "#ECFDF5", greenDk: "#059669",
+  orange: "#F59E0B", orangeLt: "#FFFBEB",
+  blue: "#3B82F6", blueLt: "#EFF6FF",
+  canvas: "#0F0F1A", bar: "#1A1A2E", border: "#2A2A4A",
+};
+const font = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
+const PW = 375, PH = 812;
+
+/* ─── ATOMS ─── */
+const Badge = ({ text, v = "purple" }) => {
+  const m = { purple: [T.purpleLt, T.purple], green: [T.greenLt, T.greenDk], orange: [T.orangeLt, "#B45309"], blue: [T.blueLt, T.blue], pink: [T.pinkLt, T.pink] };
+  const [bg, fg] = m[v] || m.purple;
+  return <span style={{ background: bg, color: fg, fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 99, letterSpacing: 0.6, textTransform: "uppercase" }}>{text}</span>;
+};
+
+const Bar = ({ pct, color = T.purple, animate }) => {
+  const [w, setW] = useState(animate ? 0 : pct);
+  useEffect(() => { if (animate) { const t = setTimeout(() => setW(pct), 100); return () => clearTimeout(t); } }, [animate, pct]);
+  return (
+    <div style={{ width: "100%", height: 6, background: T.g200, borderRadius: 99, overflow: "hidden" }}>
+      <div style={{ width: `${w}%`, height: "100%", background: color === "grad" ? T.grad : color, borderRadius: 99, transition: "width 0.8s cubic-bezier(0.4,0,0.2,1)" }} />
+    </div>
+  );
+};
+
+const Chk = ({ done, label, onClick }) => (
+  <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", cursor: onClick ? "pointer" : "default" }}>
+    <div style={{ width: 20, height: 20, borderRadius: 6, flexShrink: 0, background: done ? T.green : "transparent", border: done ? "none" : `2px solid ${T.g300}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: T.white, fontWeight: 700, transition: "all 0.3s" }}>
+      {done && "✓"}
+    </div>
+    <span style={{ fontSize: 13, fontWeight: 500, color: done ? T.g400 : T.g800, textDecoration: done ? "line-through" : "none", transition: "all 0.3s" }}>{label}</span>
+  </div>
+);
+
+const Btn = ({ children, primary, small, outline, full, onClick, disabled }) => {
+  const [hover, setHover] = useState(false);
+  const base = { padding: small ? "8px 16px" : "12px 24px", fontSize: small ? 12 : 14, fontWeight: 600, border: "none", borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6, width: full ? "100%" : "auto", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1, transition: "all 0.2s", transform: hover && !disabled ? "scale(1.02)" : "scale(1)" };
+  if (primary) Object.assign(base, { background: T.grad, color: T.white, boxShadow: hover ? "0 4px 16px rgba(107,47,160,0.4)" : "0 2px 8px rgba(107,47,160,0.3)" });
+  else if (outline) Object.assign(base, { background: "transparent", border: `1.5px solid ${T.g300}`, color: T.g700 });
+  else Object.assign(base, { background: T.g100, color: T.g700 });
+  return <button style={base} onClick={onClick} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>{children}</button>;
+};
+
+const Input = ({ placeholder, icon, value, onChange }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: 8, background: T.g50, border: `1.5px solid ${T.g200}`, borderRadius: 10, padding: "10px 14px" }}>
+    {icon && <span style={{ fontSize: 14 }}>{icon}</span>}
+    <input
+      value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
+      style={{ border: "none", background: "transparent", flex: 1, fontSize: 13, color: T.g800, outline: "none", fontFamily: font }}
+    />
+  </div>
+);
+
+const StatusBar = () => (
+  <div style={{ height: 44, padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+    <span style={{ fontSize: 14, fontWeight: 600, color: T.white }}>9:41</span>
+    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 1, alignItems: "flex-end" }}>{[5,7,9,11].map((h,i) => <div key={i} style={{ width: 3, height: h, background: i < 3 ? "white" : "rgba(255,255,255,0.4)", borderRadius: 1 }} />)}</div>
+      <div style={{ width: 24, height: 11, borderRadius: 3, border: "1px solid rgba(255,255,255,0.5)", padding: 1, display: "flex" }}>
+        <div style={{ width: "75%", background: T.green, borderRadius: 2 }} />
+      </div>
+    </div>
+  </div>
+);
+
+const NavHeader = ({ title, back, onBack }) => (
+  <div style={{ background: T.gradHero }}>
+    <StatusBar />
+    <div style={{ height: 48, display: "flex", alignItems: "center", padding: "0 16px", gap: 12 }}>
+      {back && <span onClick={onBack} style={{ color: "rgba(255,255,255,0.85)", fontSize: 22, fontWeight: 300, lineHeight: 1, cursor: "pointer" }}>‹</span>}
+      <span style={{ flex: 1, textAlign: "center", color: T.white, fontSize: 17, fontWeight: 600 }}>{title}</span>
+      <span style={{ width: 24 }} />
+    </div>
+  </div>
+);
+
+const BottomNav = ({ active = 0, onTap }) => {
+  const tabs = [{ icon: "⌂", label: "Home" }, { icon: "◇", label: "Matches" }, { icon: "◉", label: "Impact" }, { icon: "⚙", label: "Settings" }];
+  return (
+    <div style={{ display: "flex", borderTop: `1px solid ${T.g200}`, background: T.white, padding: "8px 0 20px", position: "absolute", bottom: 0, left: 0, right: 0 }}>
+      {tabs.map((t, i) => (
+        <div key={i} onClick={() => onTap && onTap(i)} style={{ flex: 1, textAlign: "center", cursor: "pointer" }}>
+          <div style={{ fontSize: 18, color: i === active ? T.purple : T.g400, lineHeight: 1 }}>{t.icon}</div>
+          <div style={{ fontSize: 9, fontWeight: 600, color: i === active ? T.purple : T.g400, marginTop: 2 }}>{t.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const FadeIn = ({ children, delay = 0 }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setVisible(true), delay); return () => clearTimeout(t); }, [delay]);
+  return <div style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(12px)", transition: "all 0.5s cubic-bezier(0.4,0,0.2,1)" }}>{children}</div>;
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN 1: POST-CALL LANDING
+   ═══════════════════════════════════════════════════════════════ */
+const Screen1 = ({ onNext }) => (
+  <div style={{ background: T.white, height: PH - 16, overflowY: "auto" }}>
+    <div style={{ background: T.gradHero, padding: "0 0 32px", borderRadius: "0 0 24px 24px" }}>
+      <StatusBar />
+      <FadeIn delay={200}>
+        <div style={{ padding: "12px 24px 0", textAlign: "center" }}>
+          <div style={{ width: 56, height: 56, borderRadius: 18, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontSize: 24 }}>📦</div>
+          <h1 style={{ fontSize: 21, fontWeight: 700, color: T.white, margin: "0 0 6px", lineHeight: 1.3, fontFamily: font }}>Welcome to Simpli</h1>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", margin: 0, fontFamily: font }}>Nashville Food Bank</p>
+        </div>
+      </FadeIn>
+    </div>
+
+    <FadeIn delay={400}>
+      <div style={{ margin: "-18px 18px 0", position: "relative", zIndex: 2 }}>
+        <div style={{ background: T.white, borderRadius: 14, padding: 16, boxShadow: "0 4px 20px rgba(0,0,0,0.08)", border: `1px solid ${T.g100}` }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: T.purple, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>Your Potential Impact</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {[{ val: "$47,500", label: "Est. donation value", icon: "💰" }, { val: "3", label: "Active donors nearby", icon: "🏢" }, { val: "12", label: "Pallets this month", icon: "📦" }, { val: "850+", label: "Families served", icon: "❤️" }].map((s, i) => (
+              <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: T.purpleLt, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>{s.icon}</div>
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: T.g900 }}>{s.val}</div>
+                  <div style={{ fontSize: 9, color: T.g500, lineHeight: 1.3 }}>{s.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </FadeIn>
+
+    <FadeIn delay={600}>
+      <div style={{ padding: "16px 20px 6px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T.g800, marginBottom: 2 }}>Get started in 5 minutes</div>
+        <div style={{ fontSize: 11, color: T.g500, marginBottom: 8 }}>Complete setup to start receiving donations</div>
+        <Chk done label="Intro call with Simpli team" />
+        <Chk done label="Basic organization info collected" />
+        <Chk label="Upload verification documents" />
+        <Chk label="Confirm distribution center" />
+      </div>
+    </FadeIn>
+
+    <FadeIn delay={800}>
+      <div style={{ padding: "6px 20px 20px" }}>
+        <Btn primary full onClick={onNext}>Continue Setup →</Btn>
+        <div style={{ textAlign: "center", fontSize: 10, color: T.g400, marginTop: 6 }}>Average completion: 5 minutes</div>
+      </div>
+    </FadeIn>
+  </div>
+);
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN 2: DOCUMENT UPLOAD
+   ═══════════════════════════════════════════════════════════════ */
+const Screen2 = ({ onNext, onBack }) => {
+  const [uploaded, setUploaded] = useState([false, false, false]);
+  const docs = [
+    { name: "IRS 990 Form", desc: "Most recent annual filing", req: true, icon: "📋" },
+    { name: "Certificate of Insurance", desc: "General liability COI", req: true, icon: "🛡️" },
+    { name: "W-9 Form", desc: "Tax identification", req: false, icon: "📄" },
+  ];
+  const pct = Math.round((uploaded.filter(Boolean).length / 3) * 100);
+  const step = uploaded.filter(Boolean).length + 1;
+
+  return (
+    <div style={{ background: T.white, height: PH - 16, overflowY: "auto" }}>
+      <NavHeader title="Verify Organization" back onBack={onBack} />
+
+      <div style={{ padding: "14px 20px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginBottom: 6 }}>
+          <span style={{ fontWeight: 600, color: T.purple }}>Step {Math.min(step, 3)} of 3</span>
+          <span style={{ color: T.g400 }}>{pct}%</span>
+        </div>
+        <Bar pct={pct} color="grad" animate />
+      </div>
+
+      <div style={{ padding: "16px 20px" }}>
+        <h2 style={{ fontSize: 17, fontWeight: 700, color: T.g900, margin: "0 0 4px", fontFamily: font }}>Upload Documents</h2>
+        <p style={{ fontSize: 12, color: T.g500, margin: "0 0 16px", lineHeight: 1.5, fontFamily: font }}>We need a few documents to verify your org. This unlocks premium corporate donations.</p>
+
+        {docs.map((doc, i) => (
+          <div
+            key={i}
+            onClick={() => { const n = [...uploaded]; n[i] = !n[i]; setUploaded(n); }}
+            style={{
+              border: `1.5px ${uploaded[i] ? "solid" : "dashed"} ${uploaded[i] ? T.green + "66" : doc.req ? T.purple + "44" : T.g300}`,
+              borderRadius: 12, padding: 14, marginBottom: 10,
+              display: "flex", alignItems: "center", gap: 12,
+              background: uploaded[i] ? T.greenLt + "40" : doc.req ? T.purpleLt + "40" : T.g50,
+              cursor: "pointer", transition: "all 0.3s",
+            }}
+          >
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: T.white, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
+              {uploaded[i] ? "✅" : doc.icon}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: T.g800 }}>{doc.name}</div>
+              <div style={{ fontSize: 10, color: T.g500 }}>{doc.desc}</div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 5 }}>
+              <Badge text={uploaded[i] ? "Done" : doc.req ? "Required" : "Optional"} v={uploaded[i] ? "green" : doc.req ? "orange" : "blue"} />
+              {!uploaded[i] && <span style={{ fontSize: 11, color: T.purple, fontWeight: 600 }}>Tap to upload</span>}
+            </div>
+          </div>
+        ))}
+
+        <div style={{ background: T.purpleLt, borderRadius: 10, padding: 12, display: "flex", gap: 8, marginTop: 6 }}>
+          <span style={{ fontSize: 14, flexShrink: 0 }}>💡</span>
+          <span style={{ fontSize: 11, color: T.purple, lineHeight: 1.5, fontWeight: 500 }}>Don't have these handy? Skip for now. You'll still see available donations.</span>
+        </div>
+      </div>
+
+      <div style={{ padding: "4px 20px 20px", display: "flex", gap: 10 }}>
+        <Btn outline onClick={onNext}>Skip for now</Btn>
+        <div style={{ flex: 1 }}><Btn primary full onClick={onNext}>Continue →</Btn></div>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN 3: ACTIVATION DASHBOARD
+   ═══════════════════════════════════════════════════════════════ */
+const Screen3 = ({ onNext, onBack, onImpact }) => {
+  const [checks, setChecks] = useState([true, true, true, false, false]);
+  const readiness = Math.round((checks.filter(Boolean).length / 5) * 100);
+  const labels = ["Organization verified", "990 form uploaded", "COI on file", "Pallet capacity confirmed", "Distribution center added"];
+
+  return (
+    <div style={{ background: T.g50, height: PH - 16, position: "relative" }}>
+      <div style={{ background: T.gradHero, borderRadius: "0 0 24px 24px", paddingBottom: 20 }}>
+        <StatusBar />
+        <div style={{ padding: "0 20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+            <span style={{ color: T.white, fontSize: 17, fontWeight: 700 }}>simpli</span>
+            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              <div style={{ position: "relative" }}>
+                <span style={{ color: T.white, fontSize: 18 }}>🔔</span>
+                <div style={{ position: "absolute", top: -2, right: -2, width: 8, height: 8, borderRadius: 4, background: T.orange, border: `2px solid ${T.purple}` }} />
+              </div>
+              <div style={{ width: 30, height: 30, borderRadius: 10, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: T.white, fontSize: 12, fontWeight: 700 }}>NF</div>
+            </div>
+          </div>
+          <FadeIn delay={100}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: T.white, marginBottom: 4 }}>Good morning,</div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 12 }}>Nashville Food Bank</div>
+          </FadeIn>
+          <FadeIn delay={300}>
+            <div style={{ background: "rgba(255,255,255,0.12)", borderRadius: 12, padding: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>Match Readiness</span>
+                <span style={{ fontSize: 18, fontWeight: 800, color: T.white }}>{readiness}%</span>
+              </div>
+              <Bar pct={readiness} color={T.green} animate />
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.55)", marginTop: 5 }}>{5 - checks.filter(Boolean).length} more step{5 - checks.filter(Boolean).length !== 1 ? "s" : ""} to be fully match-ready</div>
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+
+      <div style={{ padding: "14px 16px", paddingBottom: 80, overflowY: "auto", maxHeight: PH - 16 - 240 }}>
+        <FadeIn delay={400}>
+          <div onClick={onNext} style={{ background: T.white, borderRadius: 14, padding: 14, marginBottom: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.06)", border: `1px solid ${T.orange}33`, cursor: "pointer" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <div style={{ width: 26, height: 26, borderRadius: 7, background: T.orangeLt, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}>⚡</div>
+              <span style={{ fontSize: 13, fontWeight: 700, color: T.g900 }}>1 Donation Available</span>
+              <Badge text="New" v="orange" />
+            </div>
+            <p style={{ fontSize: 11, color: T.g600, margin: "0 0 10px", lineHeight: 1.5, paddingLeft: 34 }}>Beauty & personal care company has 8 pallets in Nashville. Complete your profile to be eligible.</p>
+            <div style={{ paddingLeft: 34 }}><Btn primary small>View Details →</Btn></div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={500}>
+          <div style={{ background: T.white, borderRadius: 14, padding: 14, marginBottom: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.g800, marginBottom: 6 }}>Complete Your Profile</div>
+            {labels.map((label, i) => (
+              <Chk key={i} done={checks[i]} label={label} onClick={() => { const n = [...checks]; n[i] = !n[i]; setChecks(n); }} />
+            ))}
+            <div style={{ marginTop: 8 }}><Btn primary small>Complete Next Step</Btn></div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={600}>
+          <div style={{ background: T.white, borderRadius: 14, padding: 14, marginBottom: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.g800, marginBottom: 10 }}>Your Simpli Impact</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div style={{ textAlign: "center", padding: 12, background: T.purpleLt, borderRadius: 12 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: T.purple }}>$0</div>
+                <div style={{ fontSize: 10, color: T.g500, fontWeight: 500, marginTop: 2 }}>Donations received</div>
+              </div>
+              <div style={{ textAlign: "center", padding: 12, background: T.greenLt, borderRadius: 12 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: T.green }}>0</div>
+                <div style={{ fontSize: 10, color: T.g500, fontWeight: 500, marginTop: 2 }}>Pallets accepted</div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={700}>
+          <div style={{ background: T.white, borderRadius: 14, padding: 14, boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.g800, marginBottom: 8 }}>Activity Near You</div>
+            {[
+              { charity: "Second Harvest", amt: "$12,400", when: "2 days ago" },
+              { charity: "Room in the Inn", amt: "$8,200", when: "1 week ago" },
+              { charity: "Nashville Rescue Mission", amt: "$23,100", when: "2 weeks ago" },
+            ].map((a, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: i < 2 ? `1px solid ${T.g100}` : "none" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: T.greenLt, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: T.green }}>{a.charity[0]}</div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: T.g700 }}>{a.charity}</div>
+                    <div style={{ fontSize: 10, color: T.g400 }}>{a.when}</div>
+                  </div>
+                </div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T.green }}>{a.amt}</span>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+      </div>
+
+      <BottomNav active={0} onTap={(i) => { if (i === 2) onImpact(); }} />
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN 4: DONATION MATCH
+   ═══════════════════════════════════════════════════════════════ */
+const Screen4 = ({ onNext, onBack }) => {
+  const [address, setAddress] = useState("");
+  const [capacity, setCapacity] = useState(null);
+  const [contact, setContact] = useState("");
+  const [phone, setPhone] = useState("");
+  const canAccept = address.length > 3 && capacity && contact.length > 1;
+
+  return (
+    <div style={{ background: T.white, height: PH - 16, overflowY: "auto" }}>
+      <NavHeader title="Donation Match" back onBack={onBack} />
+
+      <FadeIn delay={200}>
+        <div style={{ background: T.gradHero, padding: "20px 20px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 36 }}>🎉</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: T.white, marginTop: 4 }}>You've Been Matched!</div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 6 }}>A donation is ready for your organization</div>
+        </div>
+      </FadeIn>
+
+      <div style={{ padding: "0 20px" }}>
+        <FadeIn delay={400}>
+          <div style={{ background: T.white, borderRadius: 16, padding: 18, boxShadow: "0 4px 20px rgba(0,0,0,0.08)", border: `1px solid ${T.g100}`, marginTop: -16, position: "relative", zIndex: 2 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: T.g400, textTransform: "uppercase", letterSpacing: 1 }}>Donor</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: T.g900, marginTop: 3 }}>Fortune 500 Beauty Brand</div>
+              </div>
+              <Badge text="New Match" v="green" />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { l: "Estimated Value", v: "$23,400", big: true },
+                { l: "Pallets", v: "8", big: true },
+                { l: "Category", v: "Personal Care" },
+                { l: "Delivery Window", v: "May 1 to May 15" },
+              ].map((d, i) => (
+                <div key={i}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: T.g400, textTransform: "uppercase", letterSpacing: 0.5 }}>{d.l}</div>
+                  <div style={{ fontSize: d.big ? 20 : 13, fontWeight: d.big ? 800 : 600, color: T.g900, marginTop: 3 }}>{d.v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={600}>
+          <div style={{ marginTop: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: T.g800, marginBottom: 14 }}>Confirm to accept:</div>
+
+            <div style={{ border: `1.5px solid ${address.length > 3 ? T.green + "66" : T.purple + "33"}`, borderRadius: 14, padding: 14, marginBottom: 12, background: address.length > 3 ? T.greenLt + "40" : T.purpleLt + "30", transition: "all 0.3s" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 15 }}>📍</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T.g800 }}>Delivery Address</span>
+                <Badge text={address.length > 3 ? "Done" : "Required"} v={address.length > 3 ? "green" : "orange"} />
+              </div>
+              <Input placeholder="Enter warehouse or facility address..." icon="🏢" value={address} onChange={setAddress} />
+            </div>
+
+            <div style={{ border: `1.5px solid ${capacity ? T.green + "66" : T.g200}`, borderRadius: 14, padding: 14, marginBottom: 12, transition: "all 0.3s" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 15 }}>📦</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T.g800 }}>Pallet Capacity</span>
+              </div>
+              <div style={{ fontSize: 12, color: T.g500, marginBottom: 10 }}>Can you receive 8 pallets within the delivery window?</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <Btn primary={capacity === "yes"} small onClick={() => setCapacity("yes")}>Yes, 8 pallets</Btn>
+                <Btn outline={capacity !== "fewer"} primary={capacity === "fewer"} small onClick={() => setCapacity("fewer")} style={capacity && capacity !== "fewer" ? { borderColor: T.g300, color: T.g500 } : {}}>Request fewer</Btn>
+              </div>
+            </div>
+
+            <div style={{ border: `1.5px solid ${T.g200}`, borderRadius: 14, padding: 14, marginBottom: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 15 }}>👤</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T.g800 }}>Receiving Contact</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <Input placeholder="Contact name" icon="✏️" value={contact} onChange={setContact} />
+                <Input placeholder="Phone number" icon="📱" value={phone} onChange={setPhone} />
+              </div>
+            </div>
+
+            <div style={{ background: T.purpleLt, borderRadius: 10, padding: 12, display: "flex", gap: 8 }}>
+              <span style={{ fontSize: 14, flexShrink: 0 }}>💡</span>
+              <span style={{ fontSize: 11, color: T.purple, lineHeight: 1.5, fontWeight: 500 }}>You can update delivery details up to 48 hours before the delivery window opens.</span>
+            </div>
+          </div>
+        </FadeIn>
+
+        <div style={{ padding: "16px 0 20px", display: "flex", gap: 10 }}>
+          <Btn outline onClick={onBack}>Decline</Btn>
+          <div style={{ flex: 1 }}><Btn primary full onClick={onNext} disabled={!canAccept}>{canAccept ? "Accept Donation →" : "Complete fields above"}</Btn></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN 5: IMPACT REPORT
+   ═══════════════════════════════════════════════════════════════ */
+const Screen5 = ({ onBack, onBrowse }) => {
+  const [showConfetti, setShowConfetti] = useState(true);
+  useEffect(() => { const t = setTimeout(() => setShowConfetti(false), 2000); return () => clearTimeout(t); }, []);
+
+  return (
+    <div style={{ background: T.g50, height: PH - 16, position: "relative" }}>
+      <div style={{ background: T.gradHero, borderRadius: "0 0 24px 24px" }}>
+        <StatusBar />
+        <div style={{ padding: "0 20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ color: T.white, fontSize: 17, fontWeight: 700 }}>Impact Report</span>
+          <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 500, cursor: "pointer" }}>Share ↗</span>
+        </div>
+      </div>
+
+      <div style={{ padding: "0 16px", marginTop: -10, paddingBottom: 80, overflowY: "auto", maxHeight: PH - 16 - 100 }}>
+        <FadeIn delay={200}>
+          <div style={{ background: T.white, borderRadius: 18, padding: 22, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: 14 }}>
+            {showConfetti && <div style={{ fontSize: 24, marginBottom: 8, animation: "fadeIn 0.5s" }}>🎉🎊✨</div>}
+            <div style={{ fontSize: 10, fontWeight: 700, color: T.g400, textTransform: "uppercase", letterSpacing: 1 }}>Your Total Impact</div>
+            <div style={{ fontSize: 40, fontWeight: 900, background: T.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginTop: 4 }}>$23,400</div>
+            <div style={{ fontSize: 12, color: T.g500, marginTop: 2 }}>in donated goods received</div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 18 }}>
+              {[{ val: "8", label: "Pallets", color: T.purple }, { val: "1,200", label: "People Served", color: T.green }, { val: "4.2t", label: "Waste Diverted", color: T.blue }].map((s, i) => (
+                <div key={i}>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.val}</div>
+                  <div style={{ fontSize: 10, color: T.g500, fontWeight: 500 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={400}>
+          <div style={{ background: T.white, borderRadius: 14, padding: 14, marginBottom: 14, boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.g800, marginBottom: 10 }}>Donation History</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: `1px solid ${T.g100}` }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: T.purpleLt, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>💜</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.g800 }}>Fortune 500 Beauty Brand</div>
+                <div style={{ fontSize: 10, color: T.g400 }}>8 pallets · Personal Care · May 3, 2026</div>
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: T.green }}>$23,400</div>
+            </div>
+            <div style={{ textAlign: "center", padding: "10px 0", fontSize: 11, color: T.purple, fontWeight: 600 }}>First donation received! 🎉</div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={500}>
+          <div style={{ background: T.white, borderRadius: 14, padding: 14, marginBottom: 14, boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.g800, marginBottom: 10 }}>Environmental Impact</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div style={{ textAlign: "center", padding: 10, background: T.greenLt, borderRadius: 10 }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: T.greenDk }}>4.2</div>
+                <div style={{ fontSize: 9, color: T.g500 }}>Tons diverted from landfill</div>
+              </div>
+              <div style={{ textAlign: "center", padding: 10, background: T.blueLt, borderRadius: 10 }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: T.blue }}>2.8</div>
+                <div style={{ fontSize: 9, color: T.g500 }}>MTCO₂e prevented</div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={600}>
+          <div style={{ background: T.white, borderRadius: 14, padding: 14, marginBottom: 14, boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.g800, marginBottom: 4 }}>Share Your Impact</div>
+            <div style={{ fontSize: 11, color: T.g500, marginBottom: 12, lineHeight: 1.5 }}>Upload photos from your distribution. Donors love seeing the impact.</div>
+            <div style={{ border: `2px dashed ${T.purple}33`, borderRadius: 14, padding: 22, textAlign: "center", background: T.purpleLt + "40", cursor: "pointer" }}>
+              <div style={{ fontSize: 28 }}>📸</div>
+              <div style={{ fontSize: 13, color: T.purple, fontWeight: 600, marginTop: 6 }}>Tap to upload photos</div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={700}>
+          <div style={{ background: T.white, borderRadius: 14, padding: 18, textAlign: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.04)", border: `1px solid ${T.green}33`, marginBottom: 14 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T.g800 }}>Ready for more?</div>
+            <div style={{ fontSize: 11, color: T.g500, marginTop: 4, marginBottom: 12, lineHeight: 1.5 }}>2 more donations available in Nashville.</div>
+            <Btn primary onClick={onBrowse}>Browse Available Donations</Btn>
+          </div>
+        </FadeIn>
+      </div>
+
+      <BottomNav active={2} />
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   PHONE FRAME WRAPPER
+   ═══════════════════════════════════════════════════════════════ */
+const PhoneFrame = ({ children }) => (
+  <div style={{
+    width: PW, height: PH, borderRadius: 40, overflow: "hidden",
+    background: T.white, position: "relative",
+    boxShadow: "0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06)",
+    border: "8px solid #1A1A1A", flexShrink: 0,
+  }}>
+    <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 120, height: 28, background: "#1A1A1A", borderRadius: "0 0 16px 16px", zIndex: 10 }} />
+    <div style={{ width: "100%", height: "100%", overflow: "hidden", position: "relative" }}>
+      {children}
+    </div>
+  </div>
+);
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN APP — PROTOTYPE CONTROLLER
+   ═══════════════════════════════════════════════════════════════ */
+export default function SimpliPrototype() {
+  const [screen, setScreen] = useState(0);
+  const [slideDir, setSlideDir] = useState("right");
+
+  const go = (n) => {
+    setSlideDir(n > screen ? "right" : "left");
+    setScreen(n);
+  };
+
+  const screenLabels = [
+    "1. Post-Call Landing",
+    "2. Document Upload",
+    "3. Dashboard",
+    "4. Donation Match",
+    "5. Impact Report",
+  ];
+
+  const renderScreen = () => {
+    switch (screen) {
+      case 0: return <Screen1 onNext={() => go(1)} />;
+      case 1: return <Screen2 onNext={() => go(2)} onBack={() => go(0)} />;
+      case 2: return <Screen3 onNext={() => go(3)} onBack={() => go(1)} onImpact={() => go(4)} />;
+      case 3: return <Screen4 onNext={() => go(4)} onBack={() => go(2)} />;
+      case 4: return <Screen5 onBack={() => go(2)} onBrowse={() => go(2)} />;
+      default: return null;
+    }
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: T.canvas, fontFamily: font, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      {/* Top bar */}
+      <div style={{ width: "100%", background: T.bar, borderBottom: `1px solid ${T.border}`, padding: "10px 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 24, height: 24, borderRadius: 6, background: T.grad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: T.white, fontWeight: 700 }}>S</div>
+            <span style={{ fontWeight: 700, fontSize: 14, color: T.white }}>Simpli</span>
+          </div>
+          <span style={{ color: T.border }}>|</span>
+          <span style={{ fontSize: 12, color: T.g500 }}>Charity Activation Layer — Interactive Prototype</span>
+        </div>
+        <Badge text="Product Space x Simpli" v="purple" />
+      </div>
+
+      {/* Screen selector */}
+      <div style={{ display: "flex", gap: 6, padding: "16px 24px 8px", flexWrap: "wrap", justifyContent: "center" }}>
+        {screenLabels.map((label, i) => (
+          <button
+            key={i}
+            onClick={() => go(i)}
+            style={{
+              padding: "8px 16px", borderRadius: 8, fontFamily: font,
+              border: screen === i ? `2px solid ${T.purple}` : `1px solid ${T.border}`,
+              background: screen === i ? T.purple + "22" : T.bar,
+              color: screen === i ? "#C084FC" : T.g500,
+              fontSize: 12, fontWeight: screen === i ? 700 : 500, cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Flow indicator */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, padding: "8px 0 4px" }}>
+        {[0,1,2,3,4].map(i => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div
+              onClick={() => go(i)}
+              style={{
+                width: 28, height: 28, borderRadius: 14,
+                background: i === screen ? T.grad : T.bar,
+                border: i === screen ? "none" : `1px solid ${T.border}`,
+                color: i === screen ? T.white : T.g500,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 12, fontWeight: 700, cursor: "pointer",
+                transition: "all 0.3s",
+              }}
+            >
+              {i + 1}
+            </div>
+            {i < 4 && <div style={{ width: 24, height: 2, background: i < screen ? T.purple : T.border, transition: "background 0.3s" }} />}
+          </div>
+        ))}
+      </div>
+
+      {/* Instruction */}
+      <div style={{ fontSize: 11, color: T.g500, padding: "4px 0 12px", textAlign: "center" }}>
+        Click buttons and fill forms to interact — or use the screen selector above
+      </div>
+
+      {/* Phone */}
+      <PhoneFrame>
+        <div key={screen} style={{ animation: "slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1)" }}>
+          {renderScreen()}
+        </div>
+      </PhoneFrame>
+
+      <div style={{ height: 40 }} />
+
+      <style>{`
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        input::placeholder { color: ${T.g400}; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(107, 47, 160, 0.3); border-radius: 2px; }
+      `}</style>
+    </div>
+  );
+}

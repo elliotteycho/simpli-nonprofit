@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simpli Charity Microsite — Full Project Blueprint</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --simpli-blue: #1a56db;
+    --simpli-dark: #111827;
+    --simpli-gray: #6b7280;
+    --simpli-light: #f9fafb;
+    --simpli-accent: #10b981;
+    --simpli-warning: #f59e0b;
+    --simpli-red: #ef4444;
+    --simpli-purple: #8b5cf6;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --card-shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--simpli-light);
+    color: var(--simpli-dark);
+    line-height: 1.6;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #1a56db 0%, #7c3aed 100%);
+    color: white;
+    padding: 60px 40px 50px;
+    text-align: center;
+  }
+  .hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.9; font-weight: 300; max-width: 700px; margin: 0 auto; }
+  .hero .meta { margin-top: 20px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; font-size: 0.85rem; opacity: 0.8; }
+  .hero .meta span { background: rgba(255,255,255,0.15); padding: 4px 14px; border-radius: 20px; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  .nav-strip {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-strip .container { display: flex; gap: 8px; overflow-x: auto; }
+  .nav-strip a {
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--simpli-gray);
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-strip a:hover { background: #eef2ff; color: var(--simpli-blue); }
+
+  section { padding: 48px 0; }
+  section + section { border-top: 1px solid #e5e7eb; }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--simpli-dark);
+  }
+  h2 .num {
+    display: inline-block;
+    background: var(--simpli-blue);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 32px;
+    font-size: 0.85rem;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .section-desc { color: var(--simpli-gray); font-size: 0.95rem; margin-bottom: 28px; max-width: 750px; }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 16px;
+  }
+  .card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+  .card p { color: var(--simpli-gray); font-size: 0.9rem; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+  }
+  .stat-card .value {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--simpli-blue), var(--simpli-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat-card .label { font-size: 0.8rem; color: var(--simpli-gray); margin-top: 4px; }
+
+  /* Funnel */
+  .funnel { display: flex; flex-direction: column; gap: 0; align-items: center; margin: 28px 0; }
+  .funnel-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+    position: relative;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+  .funnel-step .pct { font-size: 1.3rem; margin-right: 12px; font-weight: 800; min-width: 60px; text-align: right; }
+  .funnel-step .detail { font-size: 0.75rem; font-weight: 400; opacity: 0.85; margin-top: 2px; }
+  .funnel-arrow { color: #d1d5db; font-size: 1.2rem; margin: 2px 0; }
+
+  /* Pipeline */
+  .pipeline { display: flex; gap: 4px; flex-wrap: wrap; margin: 20px 0; }
+  .pipeline-step {
+    flex: 1;
+    min-width: 120px;
+    background: #eef2ff;
+    border: 2px solid #c7d2fe;
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--simpli-blue);
+    position: relative;
+  }
+  .pipeline-step.active { background: var(--simpli-blue); color: white; border-color: var(--simpli-blue); }
+  .pipeline-step.joseph { background: #fef3c7; border-color: var(--simpli-warning); color: #92400e; }
+
+  /* Wireframe */
+  .wireframe-container {
+    background: #1e293b;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 28px 0;
+    box-shadow: var(--card-shadow-lg);
+    overflow: hidden;
+  }
+  .browser-chrome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .browser-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .browser-dot.red { background: #ef4444; }
+  .browser-dot.yellow { background: #f59e0b; }
+  .browser-dot.green { background: #10b981; }
+  .browser-url {
+    flex: 1;
+    background: #334155;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-family: monospace;
+  }
+
+  .microsite-mock {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .ms-header {
+    background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
+    padding: 32px 28px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .ms-logo {
+    width: 64px;
+    height: 64px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--simpli-blue);
+    flex-shrink: 0;
+  }
+  .ms-header h3 { font-size: 1.3rem; font-weight: 700; }
+  .ms-header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+  .ms-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; margin-top: 8px; }
+
+  .ms-body { padding: 24px 28px; }
+  .ms-section { margin-bottom: 24px; }
+  .ms-section-title { font-size: 0.75rem; font-weight: 700; color: var(--simpli-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+
+  .ms-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ms-stat {
+    background: #f0fdf4;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+  .ms-stat .val { font-size: 1.4rem; font-weight: 800; color: var(--simpli-accent); }
+  .ms-stat .lbl { font-size: 0.7rem; color: var(--simpli-gray); margin-top: 2px; }
+
+  .ms-progress-bar {
+    background: #e5e7eb;
+    border-radius: 8px;
+    height: 12px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+  .ms-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--simpli-accent), #34d399);
+    border-radius: 8px;
+    transition: width 0.8s;
+  }
+  .ms-progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--simpli-gray); }
+
+  .ms-checklist { list-style: none; }
+  .ms-checklist li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+  }
+  .ms-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .ms-check.done { background: #d1fae5; color: var(--simpli-accent); }
+  .ms-check.todo { background: #fef3c7; color: var(--simpli-warning); border: 1.5px dashed var(--simpli-warning); }
+
+  .ms-cta {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--simpli-blue);
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .ms-footer {
+    background: #f9fafb;
+    padding: 16px 28px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #9ca3af;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  /* Flow diagram */
+  .flow { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; margin: 24px 0; }
+  .flow-box {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    min-width: 140px;
+    max-width: 180px;
+  }
+  .flow-box.highlight { border-color: var(--simpli-blue); background: #eef2ff; }
+  .flow-box.new { border-color: var(--simpli-accent); background: #ecfdf5; }
+  .flow-box.joseph-box { border-color: var(--simpli-warning); background: #fef3c7; }
+  .flow-box small { display: block; font-weight: 400; color: var(--simpli-gray); font-size: 0.7rem; margin-top: 4px; }
+  .flow-arrow { font-size: 1.4rem; color: #d1d5db; }
+
+  /* Team assignments */
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .team-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    border-top: 4px solid;
+  }
+  .team-card.elliott { border-top-color: var(--simpli-blue); }
+  .team-card.anikait { border-top-color: var(--simpli-purple); }
+  .team-card.vyom { border-top-color: var(--simpli-accent); }
+  .team-card.nancy { border-top-color: var(--simpli-warning); }
+  .team-card .name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .team-card .role { font-size: 0.75rem; color: var(--simpli-gray); margin-bottom: 12px; }
+  .team-card .task-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+  .team-card .task-desc { font-size: 0.8rem; color: var(--simpli-gray); }
+  .team-card .deadline {
+    margin-top: 12px;
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; margin: 24px 0; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+  }
+  .timeline-item { position: relative; margin-bottom: 20px; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--simpli-blue);
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px var(--simpli-blue);
+  }
+  .timeline-item.done::before { background: var(--simpli-accent); box-shadow: 0 0 0 2px var(--simpli-accent); }
+  .timeline-item.current::before { background: var(--simpli-warning); box-shadow: 0 0 0 2px var(--simpli-warning); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 2px var(--simpli-warning); } 50% { box-shadow: 0 0 0 6px rgba(245,158,11,0.2); } }
+  .timeline-date { font-size: 0.7rem; font-weight: 600; color: var(--simpli-blue); text-transform: uppercase; letter-spacing: 0.04em; }
+  .timeline-title { font-weight: 600; font-size: 0.95rem; margin: 2px 0; }
+  .timeline-desc { font-size: 0.8rem; color: var(--simpli-gray); }
+
+  /* Competitor table */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 20px 0; }
+  .comp-table th {
+    background: #f3f4f6;
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--simpli-gray);
+  }
+  .comp-table td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
+  .comp-table tr:hover td { background: #fafafa; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+  .tag.green { background: #d1fae5; color: #065f46; }
+  .tag.yellow { background: #fef3c7; color: #92400e; }
+  .tag.red { background: #fee2e2; color: #991b1b; }
+  .tag.blue { background: #dbeafe; color: #1e40af; }
+
+  /* Two col */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  .callout {
+    background: #eef2ff;
+    border-left: 4px solid var(--simpli-blue);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+  .callout.warn { background: #fef3c7; border-left-color: var(--simpli-warning); }
+  .callout.success { background: #ecfdf5; border-left-color: var(--simpli-accent); }
+  .callout strong { display: block; margin-bottom: 4px; }
+
+  .label-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .label-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1.5px solid;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Simpli Charity Microsite Blueprint</h1>
+  <p class="subtitle">A charity-facing "Powered by Simpli" onboarding microsite that drives profile activation, complements Joseph's SMS flows, and gives charities immediate value before a single donation arrives.</p>
+  <div class="meta">
+    <span>Product Space x Simpli</span>
+    <span>Project Lead: Elliott Cho</span>
+    <span>Final Presentation: April 19, 2026</span>
+    <span>PRD Lock: April 12</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-strip">
+  <div class="container">
+    <a href="#problem">Problem</a>
+    <a href="#evidence">Evidence</a>
+    <a href="#metrics">Metrics</a>
+    <a href="#competitors">Competitors</a>
+    <a href="#solution">Solution</a>
+    <a href="#wireframe">Wireframe</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#mvps">MVPs</a>
+    <a href="#team">Team</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#risks">Risks</a>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- 1. PROBLEM -->
+<section id="problem">
+  <h2><span class="num">1</span> The Problem</h2>
+  <p class="section-desc">Simpli has a charity activation crisis, not a donation supply crisis. The platform has 1.5M+ charities in its directory and corporate donors waiting to give, but only 68 active partners. The funnel breaks at the moment a charity is invited to join.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="value">48.5%</div>
+      <div class="label">of invited charities never onboard</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">7.4%</div>
+      <div class="label">have claimed their profile</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">68</div>
+      <div class="label">active partners out of 1.5M directory</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">3/9</div>
+      <div class="label">average profile fields completed</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem; margin-bottom:12px;">Charity Onboarding Funnel (MissionControl Data)</h3>
+  <div class="funnel">
+    <div class="funnel-step" style="width:90%; background: linear-gradient(90deg, #ef4444, #f87171);">
+      <span class="pct">48.5%</span>
+      <div>
+        Pending (Invited) — Never Completed Onboarding
+        <div class="detail">These charities received an invite and did nothing. The single largest funnel leak.</div>
+      </div>
+    </div>
+    <div class="funnel-arrow">▼</div>
+    <div class="funnel-step" style="width:70%; background: linear-gradient(90deg, #f59e0b, #fbbf24);">
+      <span class="pct">44.1%</span>
+      <div>
+        Onboarded — Account Created
+        <div class="detail">Created an account but profile remains sparse. Average 3/9 fields completed.</div>
+      </div>
+    </div>
+    <div class="funnel-arrow">▼</div>
+    <div class="funnel-step" style="width:40%; background: linear-gradient(90deg, #10b981, #34d399);">
+      <span class="pct">7.4%</span>
+      <div>
+        Claimed — Full Profile Activation
+        <div class="detail">Complete profile, ready to receive donation matches. This is the goal state.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Why charities don't onboard:</strong>
+    No immediate value. The current invite says "join Simpli" with no tangible incentive before a donation appears. Charities already juggle 3 to 10 tools (secondary research). Adding another login with no upfront payoff fails against their default behavior: ignore it.
+  </div>
+</section>
+
+<!-- 2. EVIDENCE -->
+<section id="evidence">
+  <h2><span class="num">2</span> Evidence Base</h2>
+  <p class="section-desc">Cross-referenced from dev environment audit (April 7), secondary research brief (April 5), Reddit deep threads (4 full text), Quora practitioner interviews, and Tommy's original project brief (Feb 21).</p>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Platform Audit (April 7)</h3>
+      <p>48.5% pending in MissionControl. Only 30% of on-platform charities vetted. 89.7% come through Simpli invite (not self-signup). No charity-facing portal exists. Charity profiles average 3/9 fields. Joseph actively building text message flows for donation acceptance.</p>
+    </div>
+    <div class="card">
+      <h3>Tommy's Original Brief (Feb 21)</h3>
+      <p>"Putting aside the free stuff angle." Tommy's central challenge: onboarding charities is the bottleneck. He asked for tools that motivate charities to onboard before donations. Mentioned a Linktree-like microsite, events management, volunteer tools, impact dashboard.</p>
+    </div>
+    <div class="card">
+      <h3>Secondary Research (87+ Sources)</h3>
+      <p>Strongest signal: data fragmentation and CRM lock-in. "Tighter governance beats more tools" (r/nonprofit consensus). Any new login faces adoption headwinds. 78% of donors unaware of matching. Double the Donation saw 0 ROI after 3 years (top-voted Reddit). Push > Pull.</p>
+    </div>
+    <div class="card">
+      <h3>Key Constraint</h3>
+      <p>Joseph is actively building the text/SMS notification layer for charity allocation acceptance (3 test orders April 6-7). Our solution must complement that work, not duplicate it. The microsite solves the step BEFORE Joseph's flow: getting charities activated so they can receive those texts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. METRICS -->
+<section id="metrics">
+  <h2><span class="num">3</span> North Star Metric</h2>
+
+  <div class="card" style="border: 2px solid var(--simpli-blue);">
+    <h3 style="color: var(--simpli-blue); font-size: 1.2rem;">Charity Activation Rate</h3>
+    <p style="margin-top: 8px;">The percentage of invited charities that complete onboarding and claim their profile (move from "Pending" to "Claimed"). Currently <strong>7.4%</strong>. Every percentage point improvement expands the pool of charities available to receive Joseph's text notifications and accept donation matches.</p>
+  </div>
+
+  <h3 style="margin: 24px 0 12px; font-size: 1rem;">Supporting Metrics</h3>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="value" style="font-size: 1.2rem;">Profile Completeness</div>
+      <div class="label">Average fields completed per charity (current: 3/9)</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="font-size: 1.2rem;">Invite-to-Visit Rate</div>
+      <div class="label">% of email recipients who click through to microsite</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="font-size: 1.2rem;">Time to Activation</div>
+      <div class="label">Days between invite sent and profile claimed</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="font-size: 1.2rem;">Match Readiness</div>
+      <div class="label">% of activated charities eligible for first match within 7 days</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. COMPETITORS -->
+<section id="competitors">
+  <h2><span class="num">4</span> Competitive Landscape</h2>
+  <p class="section-desc">Nobody does what Simpli does (corporate excess inventory matching). But adjacent players show what works and what doesn't for charity engagement.</p>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>What They Do</th>
+        <th>Engagement Model</th>
+        <th>Gap Simpli Fills</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Double the Donation</strong></td>
+        <td>Individual donor-employer matching gift automation</td>
+        <td><span class="tag red">Pull (dashboard)</span></td>
+        <td>0 ROI after 3 years (Reddit). Fails because charities must log in. Simpli pushes.</td>
+      </tr>
+      <tr>
+        <td><strong>Charity Navigator</strong></td>
+        <td>Rates 225K+ charities, profile management</td>
+        <td><span class="tag yellow">Passive directory</span></td>
+        <td>No feedback loop. Updating profile = compliance chore, no tangible reward.</td>
+      </tr>
+      <tr>
+        <td><strong>GuideStar / Candid</strong></td>
+        <td>IRS 990 data, transparency reports</td>
+        <td><span class="tag yellow">Passive directory</span></td>
+        <td>Data quality is poor. Charities game ratings. No incentive to improve.</td>
+      </tr>
+      <tr>
+        <td><strong>Linktree</strong></td>
+        <td>Single-page link hub for creators</td>
+        <td><span class="tag green">Self-serve microsite</span></td>
+        <td>UX model Simpli should copy. One page, immediate value, zero learning curve.</td>
+      </tr>
+      <tr>
+        <td><strong>Bloomerang</strong></td>
+        <td>CRM for small/mid nonprofits ($1M to $5M)</td>
+        <td><span class="tag red">Full platform login</span></td>
+        <td>Simpli isn't a CRM. Microsite works alongside whatever CRM the charity uses.</td>
+      </tr>
+      <tr>
+        <td><strong>Momentum / Funraise</strong></td>
+        <td>Donor-side trigger notifications</td>
+        <td><span class="tag blue">Push (donor side)</span></td>
+        <td>These notify about individual donors. Nobody pushes corporate supply-side alerts.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <strong>Simpli's unique position:</strong>
+    No one connects corporate excess inventory to charities through a push-based, no-login experience. The microsite creates the activation layer that makes the entire matching pipeline work.
+  </div>
+</section>
+
+<!-- 5. SOLUTION -->
+<section id="solution">
+  <h2><span class="num">5</span> The Solution: Charity Microsite</h2>
+  <p class="section-desc">A public-facing, Linktree-style microsite ("Powered by Simpli") for each charity partner. One page. No login required to view. Completing the profile unlocks donation match eligibility.</p>
+
+  <div class="two-col">
+    <div class="card" style="border-left: 4px solid var(--simpli-blue);">
+      <h3>What It Is</h3>
+      <p>A single-page charity profile that shows the charity's mission, impact stats, donation history with Simpli, and a public link they can share with donors, board members, and grant funders. Think Linktree for nonprofits, but connected to real donation data.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--simpli-accent);">
+      <h3>Why Charities Care</h3>
+      <p><strong>Immediate value before any donation:</strong> A shareable page they can put in their email signature, grant applications, and social bios. Impact reporting is one of their biggest pain points (confirmed by 4 Reddit threads). This page auto-generates it.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--simpli-purple);">
+      <h3>Why Simpli Cares</h3>
+      <p><strong>Profile completion is the gate:</strong> To unlock the full microsite (and donation match eligibility), charities must complete their profile fields. This naturally moves them from 3/9 to 9/9 without Simpli nagging. Data quality improves by design.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--simpli-warning);">
+      <h3>How It Connects to Joseph's Work</h3>
+      <p><strong>Microsite = activation. Joseph's SMS = transaction.</strong> The microsite gets charities onboarded and profile-complete. Joseph's text notifications handle the donation acceptance flow after they're active. Complementary, not competing.</p>
+    </div>
+  </div>
+
+  <h3 style="margin: 28px 0 12px; font-size: 1rem;">Updated Charity Journey</h3>
+  <div class="flow">
+    <div class="flow-box highlight">
+      Simpli Invite Email<br>
+      <small>"Your charity page is ready"</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box new">
+      <strong>Microsite</strong><br>
+      <small>Charity sees their page, completes profile to unlock full features</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box highlight">
+      Profile Complete<br>
+      <small>9/9 fields, SimpliSecure vetting triggered</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box joseph-box">
+      Joseph's SMS Flow<br>
+      <small>"You have a donation match! Accept?"</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box highlight">
+      Donation Delivered<br>
+      <small>Impact stats auto-update on microsite</small>
+    </div>
+  </div>
+  <div class="label-row">
+    <span class="label-pill" style="border-color: var(--simpli-blue); color: var(--simpli-blue); background: #eef2ff;">Existing Simpli</span>
+    <span class="label-pill" style="border-color: var(--simpli-accent); color: #065f46; background: #ecfdf5;">New: Microsite (Our Build)</span>
+    <span class="label-pill" style="border-color: var(--simpli-warning); color: #92400e; background: #fef3c7;">Joseph's Active Build</span>
+  </div>
+</section>
+
+<!-- 6. WIREFRAME -->
+<section id="wireframe">
+  <h2><span class="num">6</span> Microsite Wireframe</h2>
+  <p class="section-desc">This is what a completed charity microsite looks like. The charity can share this URL publicly. Incomplete profiles show a progress bar nudging them to finish.</p>
+
+  <div class="wireframe-container">
+    <div class="browser-chrome">
+      <div class="browser-dot red"></div>
+      <div class="browser-dot yellow"></div>
+      <div class="browser-dot green"></div>
+      <div class="browser-url">simpli.supply/charity/hope-mission-center</div>
+    </div>
+    <div class="microsite-mock">
+      <!-- Header -->
+      <div class="ms-header">
+        <div class="ms-logo">HM</div>
+        <div>
+          <h3>Hope Mission Center</h3>
+          <p>Serving Nashville families with dignity since 2015</p>
+          <span class="ms-badge">✓ SimpliSecure Verified</span>
+        </div>
+      </div>
+      <div class="ms-body">
+        <!-- Profile Progress -->
+        <div class="ms-section">
+          <div class="ms-section-title">Profile Completeness</div>
+          <div class="ms-progress-label">
+            <span>9 of 9 fields complete</span>
+            <span style="color: var(--simpli-accent); font-weight: 600;">100% — Match Eligible ✓</span>
+          </div>
+          <div class="ms-progress-bar">
+            <div class="ms-progress-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Impact Stats -->
+        <div class="ms-section">
+          <div class="ms-section-title">Impact with Simpli</div>
+          <div class="ms-stats">
+            <div class="ms-stat">
+              <div class="val">12</div>
+              <div class="lbl">Donations Received</div>
+            </div>
+            <div class="ms-stat">
+              <div class="val">$48.2K</div>
+              <div class="lbl">Total Value</div>
+            </div>
+            <div class="ms-stat">
+              <div class="val">2,340</div>
+              <div class="lbl">People Helped</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Onboarding Checklist -->
+        <div class="ms-section">
+          <div class="ms-section-title">Onboarding Checklist</div>
+          <ul class="ms-checklist">
+            <li><span class="ms-check done">✓</span> Organization name and EIN verified</li>
+            <li><span class="ms-check done">✓</span> Mission statement and description</li>
+            <li><span class="ms-check done">✓</span> Physical address and service area</li>
+            <li><span class="ms-check done">✓</span> Primary contact with phone and email</li>
+            <li><span class="ms-check done">✓</span> Donation categories accepted</li>
+            <li><span class="ms-check done">✓</span> Storage and receiving capacity</li>
+            <li><span class="ms-check done">✓</span> Logo and photos uploaded</li>
+            <li><span class="ms-check done">✓</span> Tax-exempt documentation (501c3)</li>
+            <li><span class="ms-check done">✓</span> SimpliSecure vetting complete</li>
+          </ul>
+        </div>
+
+        <!-- CTA -->
+        <div class="ms-section">
+          <button class="ms-cta">Share Your Impact Page →</button>
+        </div>
+      </div>
+      <div class="ms-footer">
+        Powered by Simpli · simpli.supply · Connecting corporate surplus with community impact
+      </div>
+    </div>
+  </div>
+
+  <!-- Incomplete version -->
+  <h3 style="margin: 24px 0 12px; font-size: 1rem;">Incomplete Profile View (What a Pending Charity Sees)</h3>
+  <div class="wireframe-container">
+    <div class="browser-chrome">
+      <div class="browser-dot red"></div>
+      <div class="browser-dot yellow"></div>
+      <div class="browser-dot green"></div>
+      <div class="browser-url">simpli.supply/charity/helping-hands-nashville</div>
+    </div>
+    <div class="microsite-mock">
+      <div class="ms-header" style="background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);">
+        <div class="ms-logo" style="color: #6b7280;">HH</div>
+        <div>
+          <h3>Helping Hands Nashville</h3>
+          <p>Complete your profile to unlock your impact page</p>
+          <span class="ms-badge" style="background: rgba(255,255,255,0.15);">⏳ Verification Pending</span>
+        </div>
+      </div>
+      <div class="ms-body">
+        <div class="ms-section">
+          <div class="ms-section-title">Profile Completeness</div>
+          <div class="ms-progress-label">
+            <span>3 of 9 fields complete</span>
+            <span style="color: var(--simpli-red); font-weight: 600;">Not yet match eligible</span>
+          </div>
+          <div class="ms-progress-bar">
+            <div class="ms-progress-fill" style="width: 33%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+          </div>
+        </div>
+        <div class="ms-section">
+          <div class="ms-section-title">Complete These to Unlock Donations</div>
+          <ul class="ms-checklist">
+            <li><span class="ms-check done">✓</span> Organization name and EIN verified</li>
+            <li><span class="ms-check done">✓</span> Physical address and service area</li>
+            <li><span class="ms-check done">✓</span> Primary contact with phone and email</li>
+            <li><span class="ms-check todo">!</span> <strong>Mission statement and description</strong></li>
+            <li><span class="ms-check todo">!</span> <strong>Donation categories accepted</strong></li>
+            <li><span class="ms-check todo">!</span> <strong>Storage and receiving capacity</strong></li>
+            <li><span class="ms-check todo">!</span> <strong>Logo and photos uploaded</strong></li>
+            <li><span class="ms-check todo">!</span> <strong>Tax-exempt documentation (501c3)</strong></li>
+            <li><span class="ms-check todo">!</span> <strong>SimpliSecure vetting complete</strong></li>
+          </ul>
+        </div>
+        <div class="ms-section">
+          <button class="ms-cta" style="background: var(--simpli-warning);">Complete Your Profile to Receive Donations →</button>
+        </div>
+      </div>
+      <div class="ms-footer">
+        Powered by Simpli · simpli.supply · Connecting corporate surplus with community impact
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. ARCHITECTURE -->
+<section id="architecture">
+  <h2><span class="num">7</span> How It Fits in the Existing Platform</h2>
+  <p class="section-desc">The microsite is a public-facing layer on top of Simpli's existing data. It does not require a new database, new auth system, or new admin panel. It reads from what already exists.</p>
+
+  <h3 style="font-size: 1rem; margin-bottom: 16px;">Current Donation Pipeline (from Dev Environment)</h3>
+  <div class="pipeline">
+    <div class="pipeline-step">Quote Creation</div>
+    <div class="pipeline-step joseph">Charity Approval<br><small>(Joseph's SMS)</small></div>
+    <div class="pipeline-step">Pricing Review</div>
+    <div class="pipeline-step">Client Approval</div>
+    <div class="pipeline-step">Logistics</div>
+    <div class="pipeline-step">Delivered</div>
+    <div class="pipeline-step active">Completed</div>
+  </div>
+
+  <h3 style="font-size: 1rem; margin: 28px 0 16px;">Where the Microsite Plugs In</h3>
+  <div class="flow">
+    <div class="flow-box">
+      Charity Directory<br>
+      <small>1.5M charities (IRS registry)</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box highlight">
+      Simpli Invites Charity<br>
+      <small>89.7% via Claim Route</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box new" style="min-width: 200px;">
+      <strong>Microsite Created</strong><br>
+      <small>Auto-generated from IRS data (3/9 fields pre-filled). Charity link included in invite email.</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box new">
+      <strong>Charity Completes Profile</strong><br>
+      <small>Fills remaining 6 fields to unlock match eligibility</small>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box joseph-box">
+      Match Notifications<br>
+      <small>Joseph's SMS flow takes over</small>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Data sources already available in the platform:</strong>
+    Charity name, EIN, NTEE code, revenue, assets, location (from IRS directory). Donation history, pallet counts, item values (from Manage Orders). Impact media photos (from Media Gallery). The microsite aggregates existing data; it doesn't create new data requirements.
+  </div>
+</section>
+
+<!-- 8. MVPs -->
+<section id="mvps">
+  <h2><span class="num">8</span> Two MVPs for April 19</h2>
+  <p class="section-desc">Both deliverables must be presentable at the final presentation. They demonstrate the full charity journey from invite to activation.</p>
+
+  <div class="two-col">
+    <div class="card" style="border: 2px solid var(--simpli-accent);">
+      <div class="label-row"><span class="tag green">MVP 1</span></div>
+      <h3>Coded Charity Microsite</h3>
+      <p style="margin: 8px 0;"><strong>Format:</strong> Functional HTML/CSS/JS prototype (not Figma)</p>
+      <p style="margin: 8px 0;"><strong>Pages:</strong> Complete profile view + incomplete profile view with progress bar</p>
+      <p style="margin: 8px 0;"><strong>Data:</strong> Populated with real Hope Mission Center data from dev environment</p>
+      <p style="margin: 8px 0;"><strong>Interactive:</strong> Clickable checklist items, progress bar animation, share button</p>
+      <p style="margin: 8px 0;"><strong>Why it matters:</strong> Shows Tommy exactly what charities would see and interact with. A coded prototype carries more weight than mockups because it proves feasibility.</p>
+    </div>
+    <div class="card" style="border: 2px solid var(--simpli-blue);">
+      <div class="label-row"><span class="tag blue">MVP 2</span></div>
+      <h3>Onboarding Email Sequence</h3>
+      <p style="margin: 8px 0;"><strong>Format:</strong> 3-email HTML mockup with Simpli branding and clickable elements</p>
+      <p style="margin: 8px 0;"><strong>Email 1 (Day 0):</strong> "Your charity page is live" with microsite link and 3/9 progress preview</p>
+      <p style="margin: 8px 0;"><strong>Email 2 (Day 3):</strong> "You're 3 steps away from donations" with specific missing fields</p>
+      <p style="margin: 8px 0;"><strong>Email 3 (Day 7):</strong> "Charities like you received $48K last quarter" with social proof from active partners</p>
+      <p style="margin: 8px 0;"><strong>Why it matters:</strong> The microsite only works if charities visit it. The email sequence is the activation mechanism that replaces Simpli's current "Send Reminders" button with a designed funnel.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. TEAM -->
+<section id="team">
+  <h2><span class="num">9</span> Team Assignments</h2>
+  <p class="section-desc">All four PM interns. Each assignment has a specific deliverable, a reason it matters, and a hard deadline.</p>
+
+  <div class="team-grid">
+    <div class="team-card elliott">
+      <div class="name">Elliott Cho</div>
+      <div class="role">Project Lead</div>
+      <div class="task-title">PRD v1.0 + Presentation Deck</div>
+      <div class="task-desc"><strong>What:</strong> Write the PRD documenting the microsite solution, metrics, and build plan. Own the April 19 presentation narrative.
+      <br><br><strong>Why:</strong> The PRD is the artifact Tommy evaluates. The deck tells the story connecting the research to the solution. Both must be airtight.</div>
+      <div class="deadline">PRD Draft: April 12 · Deck: April 17</div>
+    </div>
+    <div class="team-card anikait">
+      <div class="name">Anikait Rawat</div>
+      <div class="role">PM Intern</div>
+      <div class="task-title">Competitive Teardown + Positioning Doc</div>
+      <div class="task-desc"><strong>What:</strong> Deep-dive on Double the Donation, Charity Navigator, GuideStar, and Linktree. Document their charity engagement model, what works, what fails, and how the microsite differentiates.
+      <br><br><strong>Why:</strong> Tommy will ask "who else does this?" This doc provides the answer with evidence. The Linktree comparison frames the microsite as proven UX, not invention.</div>
+      <div class="deadline">Due: April 11</div>
+    </div>
+    <div class="team-card vyom">
+      <div class="name">Vyom Mishra</div>
+      <div class="role">PM Intern</div>
+      <div class="task-title">Coded Microsite Prototype (MVP 1)</div>
+      <div class="task-desc"><strong>What:</strong> Build the functional HTML/CSS/JS charity microsite with both complete and incomplete profile views. Use real Hope Mission Center data.
+      <br><br><strong>Why:</strong> This is the centerpiece demo. A working prototype that Tommy can click through proves the concept better than any slide. It's what the audience remembers.</div>
+      <div class="deadline">v1: April 13 · Final: April 16</div>
+    </div>
+    <div class="team-card nancy">
+      <div class="name">Nancy</div>
+      <div class="role">PM Intern</div>
+      <div class="task-title">Onboarding Email Sequence (MVP 2)</div>
+      <div class="task-desc"><strong>What:</strong> Design and build the 3-email HTML sequence (Day 0, Day 3, Day 7) with Simpli branding, real copy, and clickable microsite links.
+      <br><br><strong>Why:</strong> The microsite means nothing if charities never visit it. The email sequence is the delivery mechanism. This proves we've thought about the full user journey, not just the product.</div>
+      <div class="deadline">Drafts: April 12 · Final: April 16</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>Blocking question for Tommy/Joseph:</strong>
+    "We're leaning toward building a charity-facing microsite that drives onboarding completion. Does that complement what Joseph is working on with the text notification flows?" Send this before April 10 to avoid building on an unvalidated assumption.
+  </div>
+</section>
+
+<!-- 10. TIMELINE -->
+<section id="timeline">
+  <h2><span class="num">10</span> Project Timeline</h2>
+
+  <div class="timeline">
+    <div class="timeline-item done">
+      <div class="timeline-date">Feb 21 — March 15</div>
+      <div class="timeline-title">Project Kickoff + Tommy Calls</div>
+      <div class="timeline-desc">Original brief received. Tommy described the charity onboarding bottleneck, Linktree-style microsite idea, and key constraints.</div>
+    </div>
+    <div class="timeline-item done">
+      <div class="timeline-date">April 1</div>
+      <div class="timeline-title">PRD v0.1 Created</div>
+      <div class="timeline-desc">Three directions scoped: Smart Notifications (A), Profile Health Score (B), Donation Intake Tracker (C). Notifications recommended as core.</div>
+    </div>
+    <div class="timeline-item done">
+      <div class="timeline-date">April 5</div>
+      <div class="timeline-title">Secondary Research Brief Completed</div>
+      <div class="timeline-desc">441-line research document. 4 full Reddit threads, 8+ snippet threads, Quora, industry reports. Validated push > pull. Identified CRM lock-in as biggest adoption barrier.</div>
+    </div>
+    <div class="timeline-item done">
+      <div class="timeline-date">April 7</div>
+      <div class="timeline-title">Full Dev Environment Audit</div>
+      <div class="timeline-desc">Discovered 48.5% pending funnel, 3/9 profile completeness, Joseph's active SMS build. Pivoted from Direction A to microsite to avoid overlap.</div>
+    </div>
+    <div class="timeline-item current">
+      <div class="timeline-date">April 8 (Today)</div>
+      <div class="timeline-title">Blueprint Finalized + Assignments Distributed</div>
+      <div class="timeline-desc">Full strategic framework documented. Team assignments with deadlines distributed. Blocking question for Tommy identified.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">April 10</div>
+      <div class="timeline-title">Tommy Confirmation</div>
+      <div class="timeline-desc">Must confirm microsite direction complements Joseph's work before team commits to build.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">April 11</div>
+      <div class="timeline-title">Competitive Teardown Due (Anikait)</div>
+      <div class="timeline-desc">Double the Donation, Charity Navigator, GuideStar, Linktree analysis complete.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">April 12</div>
+      <div class="timeline-title">PRD v1.0 Draft + Email Drafts Due</div>
+      <div class="timeline-desc">Elliott: PRD locked. Nancy: 3-email sequence first drafts for review. Solution direction formally locked.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">April 13</div>
+      <div class="timeline-title">Microsite Prototype v1 (Vyom)</div>
+      <div class="timeline-desc">First functional build ready for team review and iteration.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">April 16</div>
+      <div class="timeline-title">All Deliverables Final</div>
+      <div class="timeline-desc">Microsite prototype, email sequence, competitive doc, and PRD all finalized. Two days buffer before presentation.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">April 17</div>
+      <div class="timeline-title">Presentation Deck Complete</div>
+      <div class="timeline-desc">Elliott assembles final deck incorporating all deliverables. Team rehearsal.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date" style="color: var(--simpli-red);">April 19</div>
+      <div class="timeline-title" style="color: var(--simpli-red);">Final Presentation</div>
+      <div class="timeline-desc">Present to Product Space and Simpli stakeholders. Live demo of microsite prototype.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. RISKS -->
+<section id="risks">
+  <h2><span class="num">11</span> Risks and Mitigations</h2>
+
+  <div class="card" style="border-left: 4px solid var(--simpli-red);">
+    <h3>Risk 1: Tommy/Joseph don't confirm microsite direction</h3>
+    <p><strong>Impact:</strong> High. We build something that conflicts with active engineering work.</p>
+    <p><strong>Mitigation:</strong> Send the confirmation message by April 9. If no response by April 10 noon, pivot the microsite framing to "onboarding activation concept" which is direction-agnostic and still presentable.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid var(--simpli-warning);">
+    <h3>Risk 2: Zero primary user interviews</h3>
+    <p><strong>Impact:</strong> Medium. Weakens credibility of solution at presentation.</p>
+    <p><strong>Mitigation:</strong> The dev environment audit provides real platform data as a substitute for interview data. Frame the microsite as a data-informed hypothesis to be validated, not a confirmed solution. Ask Tommy for warm introductions to 2 active charity partners.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid var(--simpli-warning);">
+    <h3>Risk 3: Prototype scope creep</h3>
+    <p><strong>Impact:</strong> Medium. Vyom tries to build too many features and misses the April 13 deadline.</p>
+    <p><strong>Mitigation:</strong> Scope is locked to two views (complete + incomplete profile). No backend, no auth, no database. Static HTML with hardcoded data from the dev environment. Working > polished.</p>
+  </div>
+  <div class="card" style="border-left: 4px solid #6b7280;">
+    <h3>Risk 4: Email sequence feels generic</h3>
+    <p><strong>Impact:</strong> Low. Reduces impact of MVP 2 at presentation.</p>
+    <p><strong>Mitigation:</strong> Use real charity data (Hope Mission Center stats) and real Simpli branding. Personalization is the differentiator. Nancy should pull copy language from the secondary research brief, especially the "what's in it for me" framing.</p>
+  </div>
+</section>
+
+</div>
+
+<div style="background: var(--simpli-dark); color: white; padding: 40px; text-align: center; margin-top: 48px;">
+  <p style="font-size: 0.8rem; opacity: 0.6;">Simpli Charity Microsite Blueprint · Product Space Cohort · April 2026</p>
+  <p style="font-size: 0.75rem; opacity: 0.4; margin-top: 8px;">Elliott Cho · Anikait Rawat · Vyom Mishra · Nancy</p>
+</div>
+
+</body>
+</html>
