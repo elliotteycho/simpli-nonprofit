@@ -16,7 +16,7 @@ Elliott Cho led the project. The PM team included Anikait Rawat and Vyom Mishra.
 
 Simpli can bring in corporate supply faster than its charity network can absorb it, because most charities never get activated.
 
-The full breakdown is in `problem-statement.md`. In short, a production audit of 198 charities surfaced a three layered gap: 55 percent never complete onboarding, 77 percent have never received a donation, and the onboarded base needs to roughly double to meet supply targets.
+The full breakdown is in `02-problem-statement.md`. In short, a production audit of 198 charities surfaced a three layered gap: 55 percent never complete onboarding, 77 percent have never received a donation, and the onboarded base needs to roughly double to meet supply targets.
 
 ## The solution
 

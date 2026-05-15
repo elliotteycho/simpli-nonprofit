@@ -26,7 +26,7 @@ Volunteer management was the pain point Simpli's CEO cited most often, but the t
 
 ## April 20: Production audit correction
 
-An earlier audit had reported that all charity partners were "Currently Closed," which was read as evidence that none were active. Tommy confirmed that Open and Closed refer only to posted operating hours, not engagement. The earlier audit had simply run outside business hours. The problem framing was corrected to the three layered gap described in `problem-statement.md`, which is less dramatic but defensible in front of stakeholders.
+An earlier audit had reported that all charity partners were "Currently Closed," which was read as evidence that none were active. Tommy confirmed that Open and Closed refer only to posted operating hours, not engagement. The earlier audit had simply run outside business hours. The problem framing was corrected to the three layered gap described in `02-problem-statement.md`, which is less dramatic but defensible in front of stakeholders.
 
 ## April 20: Scope locked to activation and retention
 
